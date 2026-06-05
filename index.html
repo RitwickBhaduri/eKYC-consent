@@ -46,7 +46,7 @@
       var(--bg);
     display: flex;
     flex-direction: column;
-    padding: 0 24px;
+    padding: 0 24px 250px;
   }
 
   /* Top bar */
@@ -113,6 +113,10 @@
     font-weight: 700;
   }
 
+  .lang-wrap {
+    position: relative;
+  }
+
   .lang-select {
     background: #242424;
     border-radius: 22px;
@@ -123,9 +127,77 @@
     font-size: 14px;
     color: #e8e8e8;
     cursor: pointer;
+    user-select: none;
   }
 
-  .lang-select svg { display: block; }
+  .lang-select svg {
+    display: block;
+    transition: transform 0.2s ease;
+  }
+
+  .lang-wrap.open .lang-select svg {
+    transform: rotate(180deg);
+  }
+
+  .lang-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 150px;
+    background: #242424;
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 20;
+    display: none;
+    /* Show 4 options (each ~46px tall) then scroll */
+    max-height: 196px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .lang-menu::-webkit-scrollbar {
+    width: 4px;
+  }
+  .lang-menu::-webkit-scrollbar-thumb {
+    background: #4a4a4a;
+    border-radius: 4px;
+  }
+  .lang-menu::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .lang-wrap.open .lang-menu {
+    display: block;
+  }
+
+  .lang-option {
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #e8e8e8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .lang-option:hover {
+    background: #333333;
+  }
+
+  .lang-option.active {
+    color: var(--orange);
+  }
+
+  .lang-option .check {
+    opacity: 0;
+  }
+
+  .lang-option.active .check {
+    opacity: 1;
+  }
 
   .consent-text {
     color: #d7d7d7;
@@ -133,6 +205,21 @@
     line-height: 1.55;
     margin-top: 10px;
     font-weight: 400;
+    height: 279px;
+    overflow-y: auto;
+    padding-right: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .consent-text::-webkit-scrollbar {
+    width: 4px;
+  }
+  .consent-text::-webkit-scrollbar-thumb {
+    background: #3a3a3a;
+    border-radius: 4px;
+  }
+  .consent-text::-webkit-scrollbar-track {
+    background: transparent;
   }
 
   .divider {
@@ -154,8 +241,15 @@
 
   /* Footer area */
   .footer {
-    padding-top: 26px;
-    padding-bottom: 18px;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    padding: 20px 24px 18px;
+    background: var(--bg);
+    z-index: 10;
   }
 
   .payment-logos {
@@ -261,15 +355,111 @@
     <div class="card">
       <div class="card-head">
         <span class="card-title">Aadhaar consent</span>
-        <div class="lang-select">
-          English
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
+        <div class="lang-wrap" id="langWrap">
+          <div class="lang-select" id="langSelect">
+            <span id="langLabel">English</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div class="lang-menu" id="langMenu">
+            <div class="lang-option active" data-lang="en">
+              <span>English</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="hi">
+              <span>Hindi</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="bn">
+              <span>Bengali</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="mt">
+              <span>Marathi</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="tl">
+              <span>Telugu</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="tm">
+              <span>Tamil</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="gj">
+              <span>Gujarati</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="ud">
+              <span>Urdu</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="kn">
+              <span>Kannada</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="od">
+              <span>Odia</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="ml">
+              <span>Malayalam</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="pj">
+              <span>Punjabi</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="as">
+              <span>Assamese</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="mth">
+              <span>Maithili</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="st">
+              <span>Santali</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="ksh">
+              <span>Kashmiri</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="np">
+              <span>Nepali</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="sd">
+              <span>Sindhi</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="dg">
+              <span>Dogri</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="mn">
+              <span>Manipuri</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="bd">
+              <span>Bodo</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="kk">
+              <span>Konkani</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="lang-option" data-lang="sk">
+              <span>Sanskrit</span>
+              <svg class="check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
         </div>
       </div>
 
-      <p class="consent-text">
+      <p class="consent-text" id="consentText">
         I understand that FamApp will collect and share my Aadhar number/VID with UIDAI for OTP-based e-KYC authentication and upon successful authentication, UIDAI will share with FamApp my identity and demographic information including name, masked Aadhaar number, address, gender, and date of birth which will only be used by FamApp for the purposes of identity verification for wallet services. I understand submission of Aadhaar is voluntary, and I may opt to open/use wallet with lower limits (as applicable). Accordingly, by clicking ‘I Agree, start verification’ below, I hereby consent to submit my Aadhaar number/VID to FamApp for OTP-based e-KYC authentication and agree to FamApp’s Aadhaar Terms and Privacy Policy.
       </p>
 
@@ -296,8 +486,65 @@
 <audio id="audioPlayer" src="English_consent_eKYC.mp3"></audio>
 
 <script>
+  // Per-language consent content, font size, and audio file.
+  const LANGUAGES = {
+    en: {
+      label: 'English',
+      fontSize: '12px',
+      audio: 'English_consent_eKYC.mp3',
+      text: `I understand that FamApp will collect and share my Aadhar number/VID with UIDAI for OTP-based e-KYC authentication and upon successful authentication, UIDAI will share with FamApp my identity and demographic information including name, masked Aadhaar number, address, gender, and date of birth which will only be used by FamApp for the purposes of identity verification for wallet services. I understand submission of Aadhaar is voluntary, and I may opt to open/use wallet with lower limits (as applicable). Accordingly, by clicking ‘I Agree, start verification’ below, I hereby consent to submit my Aadhaar number/VID to FamApp for OTP-based e-KYC authentication and agree to FamApp’s Aadhaar Terms and Privacy Policy.`
+    },
+    hi: {
+      label: 'Hindi',
+      fontSize: '13px',
+      audio: 'Hindi_consent_eKYC.mp3',
+      text: `मैं समझता/समझती हूँ कि FamApp OTP-आधारित e-KYC प्रमाणीकरण हेतु मेरा आधार नंबर या VID एकत्र करेगा और उसे UIDAI के साथ साझा करेगा। सफल प्रमाणीकरण के उपरांत, UIDAI मेरा पहचान एवं जनसांख्यिकीय विवरण, जिसमें नाम, मास्क किया गया आधार नंबर, पता, लिंग और जन्म तिथि शामिल हैं, FamApp के साथ साझा करेगा, जिसका उपयोग केवल वॉलेट सेवाओं हेतु पहचान सत्यापन के उद्देश्य से किया जाएगा। मैं समझता/समझती हूँ कि आधार प्रस्तुत करना स्वैच्छिक है, और मैं कम सीमा वाले वॉलेट (जहाँ लागू हो) को खोलने/उपयोग करने का विकल्प चुन सकता/सकती हूँ। अतः, नीचे ‘मैं सहमत हूँ, सत्यापन प्रारंभ करें’ पर क्लिक करके, मैं OTP-आधारित e-KYC प्रमाणीकरण हेतु अपना आधार नंबर या VID FamApp को प्रस्तुत करने के लिए अपनी सहमति देता/देती हूँ तथा FamApp की आधार शर्तों और गोपनीयता नीति से सहमत हूँ।`
+    },
+    bn: {
+      label: 'Bengali',
+      fontSize: '13px',
+      audio: 'Bengali_consent_eKYC.mp3',
+      text: `আমি বুঝতে পারছি যে FamApp OTP-ভিত্তিক e-KYC প্রমাণীকরণের জন্য আমার আধার নম্বর অথবা VID সংগ্রহ করবে এবং তা UIDAI-এর সঙ্গে শেয়ার করবে। সফল প্রমাণীকরণের পর, UIDAI আমার পরিচয় এবং জনসংখ্যাতাত্ত্বিক তথ্য, যার মধ্যে নাম, মাস্ক করা আধার নম্বর, ঠিকানা, লিঙ্গ এবং জন্মতারিখ অন্তর্ভুক্ত, FamApp-এর সঙ্গে শেয়ার করবে, যা শুধুমাত্র ওয়ালেট পরিষেবার জন্য পরিচয় যাচাইয়ের উদ্দেশ্যে ব্যবহার করা হবে। আমি বুঝতে পারছি যে আধার জমা দেওয়া স্বেচ্ছাসেবী, এবং আমি কম সীমার ওয়ালেট (যেখানে প্রযোজ্য) খোলা অথবা ব্যবহার করার বিকল্প বেছে নিতে পারি। অতএব, নিচে ‘আমি সম্মত, যাচাইকরণ শুরু করুন’-এ ক্লিক করে, আমি OTP-ভিত্তিক e-KYC প্রমাণীকরণের জন্য আমার আধার নম্বর অথবা VID FamApp-কে জমা দেওয়ার জন্য আমার সম্মতি প্রদান করছি এবং FamApp-এর Aadhaar Terms এবং Privacy Policy-তে সম্মতি জানাচ্ছি।`
+    }
+  };
+
+  const audio = document.getElementById('audioPlayer');
+  const consentEl = document.getElementById('consentText');
+  const labelEl = document.getElementById('langLabel');
+  const wrap = document.getElementById('langWrap');
+  const select = document.getElementById('langSelect');
+  const options = document.querySelectorAll('.lang-option');
+
+  function applyLanguage(code) {
+    const lang = LANGUAGES[code];
+    if (!lang) return;
+    consentEl.textContent = lang.text;
+    consentEl.style.fontSize = lang.fontSize;
+    labelEl.textContent = lang.label;
+    audio.src = lang.audio;
+    options.forEach(o => o.classList.toggle('active', o.dataset.lang === code));
+  }
+
+  // Toggle dropdown
+  select.onclick = (e) => {
+    e.stopPropagation();
+    wrap.classList.toggle('open');
+  };
+
+  // Choose a language
+  options.forEach(o => {
+    o.onclick = (e) => {
+      e.stopPropagation();
+      applyLanguage(o.dataset.lang);
+      wrap.classList.remove('open');
+    };
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', () => wrap.classList.remove('open'));
+
+  // Play voice note in the currently selected language
   document.getElementById('playAudio').onclick = () => {
-    const audio = document.getElementById('audioPlayer');
     audio.currentTime = 0;
     audio.play();
   };
